@@ -21,12 +21,12 @@ function add_copy_button_to_code_blocks( $content ) {
         $replacement = function($matches) {
             static $id = 0;
             $id++;
-            $code = htmlspecialchars($matches[1], ENT_QUOTES, 'UTF-8');
+            $code = $matches[1]; // Don't use htmlspecialchars here
             $plugin_url = plugin_dir_url( __FILE__ );
             return '<div class="code-block-container">
-                        <pre class="wp-block-code"><code id="code-' . $id . '">' . $code . '</code></pre>
-                        <amp-iframe sandbox="allow-scripts" width="94" height="62" frameborder="0" 
-                                    src="' . $plugin_url . 'copier.html#' . urlencode($code) . '">
+                        <pre class="wp-block-code"><code id="code-' . $id . '">' . htmlspecialchars($code) . '</code></pre>
+                        <amp-iframe sandbox="allow-scripts" width="64" height="42" frameborder="0" 
+                                    src="' . $plugin_url . 'copier.html#' . rawurlencode($code) . '">
                             <button class="copy-button" placeholder disabled>Copy</button>
                         </amp-iframe>
                     </div>';

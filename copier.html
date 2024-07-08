@@ -22,19 +22,19 @@
 <body>
     <button onclick="copyToClipboard()">Copy</button>
     <script>
-        function copyToClipboard() {
-            const text = decodeURIComponent(window.location.hash.substr(1));
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            document.querySelector('button').textContent = 'Copied!';
-            setTimeout(() => {
-                document.querySelector('button').textContent = 'Copy';
-            }, 2000);
-        }
-    </script>
+    function copyToClipboard() {
+        const text = decodeURIComponent(window.location.hash.substr(1)).replace(/\+/g, ' ');
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        document.querySelector('button').textContent = 'Copied!';
+        setTimeout(() => {
+            document.querySelector('button').textContent = 'Copy';
+        }, 2000);
+    }
+</script>
 </body>
 </html>
