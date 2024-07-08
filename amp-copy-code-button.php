@@ -3,10 +3,10 @@
 Plugin Name: AMP Copy Code Button
 Description: Adds a "copy" button to code blocks in AMP pages or posts.
 Version: 1.0
-Author: Zahir Alam
+Author: Your Name
 */
 
-// Enqueue AMP iframe script
+// Enqueue AMP scripts
 function amp_copy_code_button_scripts() {
     if ( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() ) {
         echo '<script async custom-element="amp-iframe" src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script>';
@@ -17,15 +17,21 @@ add_action( 'wp_head', 'amp_copy_code_button_scripts' );
 // Add copy button to code blocks
 function add_copy_button_to_code_blocks( $content ) {
     if ( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() ) {
-        $plugin_url = plugin_dir_url( __FILE__ );
         $pattern = '/<pre class="wp-block-code"><code>(.*?)<\/code><\/pre>/is';
-        $replacement = '<div class="code-block-container">
-                            <pre class="wp-block-code"><code>$1</code></pre>
-                            <amp-iframe sandbox="allow-scripts" width="64" height="42" frameborder="0" src="' . $plugin_url . 'amp-copy-code.html#$1">
-                                <button class="copy-button" placeholder disabled>Copy</button>
-                            </amp-iframe>
-                        </div>';
-        $content = preg_replace( $pattern, $replacement, $content );
+        $replacement = function($matches) {
+            static $id = 0;
+            $id++;
+            $code = htmlspecialchars($matches[1], ENT_QUOTES, 'UTF-8');
+            $plugin_url = plugin_dir_url( __FILE__ );
+            return '<div class="code-block-container">
+                        <pre class="wp-block-code"><code id="code-' . $id . '">' . $code . '</code></pre>
+                        <amp-iframe sandbox="allow-scripts" width="94" height="62" frameborder="0" 
+                                    src="' . $plugin_url . 'copier.html#' . urlencode($code) . '">
+                            <button class="copy-button" placeholder disabled>Copy</button>
+                        </amp-iframe>
+                    </div>';
+        };
+        $content = preg_replace_callback( $pattern, $replacement, $content );
     }
     return $content;
 }
@@ -38,4 +44,3 @@ function enqueue_amp_copy_code_stylesheet() {
     }
 }
 add_action( 'wp_enqueue_scripts', 'enqueue_amp_copy_code_stylesheet' );
-
