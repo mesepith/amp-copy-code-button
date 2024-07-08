@@ -3,7 +3,7 @@
 Plugin Name: AMP Copy Code Button
 Description: Adds a "copy" button to code blocks in AMP pages or posts.
 Version: 1.0
-Author: Your Name
+Author: Zahir Alam
 */
 
 // Enqueue AMP scripts
@@ -21,11 +21,11 @@ function add_copy_button_to_code_blocks( $content ) {
         $replacement = function($matches) {
             static $id = 0;
             $id++;
-            $code = $matches[1]; // Don't use htmlspecialchars here
+            $code = html_entity_decode($matches[1], ENT_QUOTES | ENT_HTML5, 'UTF-8');
             $plugin_url = plugin_dir_url( __FILE__ );
             return '<div class="code-block-container">
-                        <pre class="wp-block-code"><code id="code-' . $id . '">' . htmlspecialchars($code) . '</code></pre>
-                        <amp-iframe sandbox="allow-scripts" width="64" height="42" frameborder="0" 
+                        <pre class="wp-block-code"><code id="code-' . $id . '">' . htmlspecialchars($code, ENT_QUOTES, 'UTF-8') . '</code></pre>
+                        <amp-iframe sandbox="allow-scripts" width="94" height="72" frameborder="0" 
                                     src="' . $plugin_url . 'copier.html#' . rawurlencode($code) . '">
                             <button class="copy-button" placeholder disabled>Copy</button>
                         </amp-iframe>
